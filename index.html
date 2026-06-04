@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Life Analytics Dashboard</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar glass">
+        <h1>Life Analytics</h1>
+        <nav>
+          <button class="nav-link active" data-target="tracker">Tracker</button>
+          <button class="nav-link" data-target="analytics">Analytics</button>
+          <button class="nav-link" data-target="goals">Goals</button>
+          <button class="nav-link" data-target="insights">Insights</button>
+          <button class="nav-link" data-target="extras">Extras</button>
+          <button class="nav-link" data-target="backup">Backup</button>
+        </nav>
+        <button id="themeToggle">Toggle Theme</button>
+      </aside>
+
+      <main>
+        <header class="glass topbar">
+          <div>
+            <h2 id="currentDateLabel"></h2>
+            <p id="currentTimeLabel"></p>
+          </div>
+          <div class="date-nav">
+            <button id="prevDayBtn">◀</button>
+            <input type="date" id="selectedDate" />
+            <button id="nextDayBtn">▶</button>
+          </div>
+        </header>
+
+        <section id="widgets" class="grid"></section>
+
+        <section id="tracker" class="tab active">
+          <div class="glass card">
+            <h3>Daily Time Tracking</h3>
+            <form id="activityForm">
+              <input type="hidden" id="activityId" />
+              <div class="form-grid">
+                <input type="text" id="activityName" placeholder="Activity name" required />
+                <select id="activityCategory" required></select>
+                <input type="time" id="activityStart" required />
+                <input type="time" id="activityEnd" required />
+                <label><input type="checkbox" id="productive" checked /> Productive</label>
+                <button type="submit" id="saveActivityBtn">Save Activity</button>
+              </div>
+            </form>
+            <p id="validationMessage"></p>
+          </div>
+
+          <div class="glass card">
+            <h3>Search & Filters</h3>
+            <div class="form-grid">
+              <input type="text" id="searchActivity" placeholder="Search activity" />
+              <input type="month" id="filterMonth" />
+              <input type="number" id="filterYear" placeholder="Year" min="2000" max="2100" />
+              <select id="filterCategory"><option value="">All Categories</option></select>
+              <input type="number" id="filterScore" placeholder="Min productivity score" min="0" max="100" />
+            </div>
+          </div>
+
+          <div class="glass card">
+            <h3>Activities</h3>
+            <div id="activitiesList"></div>
+          </div>
+        </section>
+
+        <section id="analytics" class="tab">
+          <div class="grid charts">
+            <div class="glass card"><canvas id="pieChart"></canvas></div>
+            <div class="glass card"><canvas id="doughnutChart"></canvas></div>
+            <div class="glass card"><canvas id="barChart"></canvas></div>
+            <div class="glass card"><canvas id="lineChart"></canvas></div>
+            <div class="glass card"><canvas id="areaChart"></canvas></div>
+            <div class="glass card"><canvas id="timelineChart"></canvas></div>
+          </div>
+          <div class="glass card">
+            <h3>Heatmap Calendar</h3>
+            <div id="heatmap"></div>
+          </div>
+          <div class="glass card" id="scoresCard">
+            <h3>Productivity Scores</h3>
+            <div id="scoreCircles" class="score-circles"></div>
+          </div>
+          <div class="glass card">
+            <h3>Habit Intelligence</h3>
+            <ul id="habitStats"></ul>
+          </div>
+        </section>
+
+        <section id="goals" class="tab">
+          <div class="glass card">
+            <h3>Goal Management</h3>
+            <form id="goalForm" class="form-grid">
+              <input id="goalName" placeholder="Goal name (e.g. Study 5h daily)" required />
+              <input id="goalActivity" placeholder="Activity/category" required />
+              <input id="goalTarget" type="number" step="0.1" min="0.1" placeholder="Target hours/day" required />
+              <button type="submit">Add Goal</button>
+            </form>
+            <div id="goalList"></div>
+          </div>
+        </section>
+
+        <section id="insights" class="tab">
+          <div class="glass card">
+            <h3>Personal Insights Engine</h3>
+            <ul id="insightList"></ul>
+          </div>
+          <div class="glass card">
+            <h3>Mood Tracker</h3>
+            <div class="form-grid">
+              <select id="moodSelect">
+                <option value="great">Great</option>
+                <option value="good">Good</option>
+                <option value="neutral">Neutral</option>
+                <option value="low">Low</option>
+                <option value="stressed">Stressed</option>
+              </select>
+              <button id="saveMoodBtn">Save Mood</button>
+            </div>
+            <p id="moodInfo"></p>
+          </div>
+          <div class="glass card">
+            <h3>Achievements</h3>
+            <div id="achievementList"></div>
+          </div>
+          <div class="glass card">
+            <h3>Report Generator</h3>
+            <div class="form-grid">
+              <select id="reportRange">
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+              <button id="downloadReportBtn">Download Report</button>
+            </div>
+            <pre id="reportPreview"></pre>
+          </div>
+        </section>
+
+        <section id="extras" class="tab">
+          <div class="glass card">
+            <h3>Life Replay</h3>
+            <button id="startReplayBtn">Start Replay</button>
+            <ul id="replayOutput"></ul>
+          </div>
+          <div class="glass card">
+            <h3>Time Bank</h3>
+            <ul id="timeBank"></ul>
+          </div>
+          <div class="glass card">
+            <h3>Digital Addiction Monitor & Focus Score</h3>
+            <p id="digitalMonitor"></p>
+            <p id="focusScore"></p>
+          </div>
+        </section>
+
+        <section id="backup" class="tab">
+          <div class="glass card">
+            <h3>Export & Backup</h3>
+            <div class="form-grid">
+              <button id="exportJsonBtn">Export JSON</button>
+              <button id="exportCsvBtn">Download CSV</button>
+              <button id="backupBtn">Backup Data</button>
+              <button id="restoreBtn">Restore Last Backup</button>
+              <input type="file" id="importJsonInput" accept="application/json" />
+            </div>
+            <p id="backupStatus"></p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
