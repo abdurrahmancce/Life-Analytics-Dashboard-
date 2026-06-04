@@ -3,7 +3,7 @@
 Production-ready, offline-first **Life Analytics Dashboard** built with pure HTML/CSS/JavaScript and Local Storage.
 
 ## Run
-Open `/tmp/workspace/abdurrahmancce/life-analytics-dashboard/index.html` in a browser.
+Open `index.html` in a browser.
 
 ## Features
 - Daily activity tracking with add/edit/delete and 24-hour validation

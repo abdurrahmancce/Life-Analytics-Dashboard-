@@ -197,19 +197,34 @@
     const rem = Number((24 - total).toFixed(2));
     setValidation(total === 24 ? "24-hour validation complete." : `Total: ${total}h. Remaining: ${rem}h`, total !== 24);
 
-    $("activitiesList").innerHTML = activities.length ? activities.map((a) => `
-      <div class="item">
-        <div>
-          <strong>${escapeHTML(a.name)}</strong> (${a.category})<br/>
-          ${a.start} → ${a.end} (${a.duration}h)
-        </div>
-        <button data-edit="${a.id}">Edit</button>
-        <button data-del="${a.id}">Delete</button>
-      </div>
-    `).join("") : "<p>No activities found for selected filters/date.</p>";
+    const container = $("activitiesList");
+    container.textContent = "";
+    if (!activities.length) {
+      const empty = document.createElement("p");
+      empty.textContent = "No activities found for selected filters/date.";
+      container.appendChild(empty);
+      return;
+    }
 
-    $("activitiesList").querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => editActivity(b.dataset.edit)));
-    $("activitiesList").querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => deleteActivity(b.dataset.del)));
+    activities.forEach((a) => {
+      const row = document.createElement("div");
+      row.className = "item";
+      const info = document.createElement("div");
+      const title = document.createElement("strong");
+      title.textContent = a.name;
+      info.appendChild(title);
+      info.append(` (${a.category})`);
+      info.appendChild(document.createElement("br"));
+      info.append(`${a.start} → ${a.end} (${a.duration}h)`);
+      const editBtn = document.createElement("button");
+      editBtn.textContent = "Edit";
+      editBtn.addEventListener("click", () => editActivity(a.id));
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete";
+      delBtn.addEventListener("click", () => deleteActivity(a.id));
+      row.append(info, editBtn, delBtn);
+      container.appendChild(row);
+    });
   }
 
   function renderWidgets() {
@@ -298,11 +313,30 @@
   }
 
   function renderGoals() {
-    $("goalList").innerHTML = state.goals.length ? state.goals.map((goal) => {
+    const container = $("goalList");
+    container.textContent = "";
+    if (!state.goals.length) {
+      const empty = document.createElement("p");
+      empty.textContent = "No goals added yet.";
+      container.appendChild(empty);
+      return;
+    }
+    state.goals.forEach((goal) => {
       const p = goalProgress(goal);
-      return `<div class="item"><div><strong>${escapeHTML(goal.name)}</strong><br/>${p.done}h / ${goal.target}h (${p.pct}%), streak: ${p.streak}</div><button data-rm="${goal.id}">Delete</button></div>`;
-    }).join("") : "<p>No goals added yet.</p>";
-    $("goalList").querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", () => removeGoal(b.dataset.rm)));
+      const row = document.createElement("div");
+      row.className = "item";
+      const info = document.createElement("div");
+      const name = document.createElement("strong");
+      name.textContent = goal.name;
+      info.appendChild(name);
+      info.appendChild(document.createElement("br"));
+      info.append(`${p.done}h / ${goal.target}h (${p.pct}%), streak: ${p.streak}`);
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete";
+      delBtn.addEventListener("click", () => removeGoal(goal.id));
+      row.append(info, delBtn);
+      container.appendChild(row);
+    });
   }
 
   function onSaveMood() {
